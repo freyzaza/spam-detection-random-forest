@@ -1,109 +1,143 @@
-# Spam Detection (Random Forest + TF-IDF) — Streamlit App
+# Spam Detection (TF-IDF + Random Forest) — Streamlit App
 
-Project ini adalah aplikasi sederhana untuk mengklasifikasikan teks menjadi **spam** atau **non-spam (ham)** menggunakan model **Random Forest**. Untuk mengubah teks menjadi fitur numerik, sistem memakai **TF-IDF vectorizer**. Model dan vectorizer sudah disimpan dalam file `.pkl`, lalu digunakan oleh aplikasi **Streamlit** untuk inference.
+This repository contains an end-to-end **spam detection system** for Indonesian email/text data using **TF-IDF feature extraction** and a **Random Forest classifier**.  
+The project covers data preprocessing, exploratory data analysis (EDA), model training, and deployment as an interactive **Streamlit web application**.
 
-Repo ini memang ditujukan untuk dijalankan dari file `streamlit_spam_app.py`.
+## Live Demo
+The application has been deployed and can be accessed here:  
+https://rf-spam-detection.streamlit.app/
 
-## Brief Penjelasan Project
-Spam detection adalah salah satu kasus umum NLP (Natural Language Processing) untuk memfilter pesan yang tidak diinginkan. Di project ini, teks diubah menjadi representasi TF-IDF, lalu diklasifikasikan menggunakan Random Forest yang relatif stabil dan mudah dipakai untuk baseline klasifikasi.
+---
+
+## Project Description
+Spam detection is a fundamental task in Natural Language Processing (NLP) that aims to identify and filter unwanted or malicious messages.  
+In this project, raw email text is cleaned using custom preprocessing rules, transformed into numerical features using TF-IDF, and classified using a Random Forest model.
+
+This project is designed as an **educational and portfolio project** demonstrating a complete NLP workflow from raw data to a deployed web application.
+
+---
 
 ## Project Overview
-Yang dilakukan sistem secara garis besar:
-1. Menerima input teks dari pengguna (melalui UI Streamlit).
-2. Melakukan transformasi teks menjadi fitur TF-IDF menggunakan `tfidf_vectorizer.pkl`.
-3. Memprediksi kelas menggunakan model `rf_model.pkl`.
-4. Menampilkan hasil prediksi ke pengguna (spam / ham).
+System workflow:
+1. User inputs an email or message text via the Streamlit interface.
+2. Text preprocessing is applied using a custom preprocessing module.
+3. The cleaned text is converted into TF-IDF features.
+4. A trained Random Forest model predicts whether the message is spam or non-spam.
+5. The prediction result is displayed to the user.
 
-Komponen yang tersedia:
-- Notebook untuk training/eksperimen.
-- Artefak model hasil training (vectorizer + model).
-- Aplikasi Streamlit untuk menjalankan prediksi secara interaktif.
+Main components:
+- Dataset for training and analysis
+- EDA notebook for data exploration
+- Training script for model building
+- Pre-trained model artifacts
+- Streamlit app for inference
+
+---
 
 ## System Architecture
-Arsitektur inference (saat aplikasi dijalankan):
 
+### Inference Pipeline
 User Input Text  
+→ Text Preprocessing (`src/preprocessing.py`)  
 → TF-IDF Vectorizer (`tfidf_vectorizer.pkl`)  
 → Random Forest Model (`rf_model.pkl`)  
-→ Prediction Result (Spam / Ham)  
-→ Streamlit UI
+→ Prediction Result (Spam / Non-Spam)  
+→ Streamlit Web Interface  
 
-Arsitektur training (di notebook):
-- Notebook melakukan preprocessing + training model Random Forest.
-- Notebook menyimpan:
-  - `tfidf_vectorizer.pkl` (TF-IDF transformer)
-  - `rf_model.pkl` (model Random Forest terlatih)
+### Training Pipeline
+- Load dataset from CSV file
+- Text cleaning and normalization
+- TF-IDF feature extraction
+- Random Forest model training
+- Model and vectorizer serialization as `.pkl` files
 
-Catatan: Aplikasi Streamlit tidak melatih model dari awal. Ia hanya memuat artefak `.pkl` untuk inference.
+Note: The Streamlit application **does not retrain the model**. It only loads the trained artifacts for inference.
+
+---
 
 ## Project Structure
-Struktur file utama di repo ini:
-
+```
 .
-├── README.md  
-├── nlt_base_code.ipynb  
-├── rf_model.pkl  
-├── streamlit_spam_app.py  
-└── tfidf_vectorizer.pkl  
+├── data/
+│   └── email_spam_indo.csv
+├── src/
+│   ├── preprocessing.py
+│   └── __pycache__/
+├── app.py
+├── train.py
+├── eda.ipynb
+├── rf_model.pkl
+├── tfidf_vectorizer.pkl
+├── requirements.txt
+└── README.md
+```
 
-Penjelasan singkat:
-- `streamlit_spam_app.py`  
-  Entry point aplikasi Streamlit untuk prediksi spam/ham.
-- `tfidf_vectorizer.pkl`  
-  TF-IDF vectorizer yang dipakai untuk mengubah teks menjadi fitur.
-- `rf_model.pkl`  
-  Model Random Forest terlatih untuk klasifikasi.
-- `nlt_base_code.ipynb`  
-  Notebook untuk proses training/eksperimen (dan biasanya tempat menghasilkan file `.pkl`).
+---
 
-## Cara Run Locally
+## How to Run Locally
 
 ### 1) Prerequisites
-- Python 3.9+ (disarankan)
+- Python 3.9 or newer
 - pip
+- (Optional) Conda or virtual environment
 
-### 2) Clone repository
+---
+
+### 2) Clone the Repository
 ```bash
 git clone https://github.com/freyzaza/spam-detection-random-forest.git
 cd spam-detection-random-forest
 ```
 
-### 3) Buat virtual environment (opsional tapi disarankan)
-Windows (PowerShell):
-```powershell
+---
+
+### 3) Create and Activate a Virtual Environment (Optional but Recommended)
+
+Using `venv`:
+```bash
 python -m venv .venv
-.venv\Scripts\Activate.ps1
+source .venv/bin/activate   # macOS / Linux
+.venv\Scripts\Activate.ps1 # Windows PowerShell
 ```
 
-macOS / Linux:
+Using Conda:
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+conda create -n spam-detection-random-forest python=3.10 -y
+conda activate spam-detection-random-forest
 ```
 
-### 4) Install dependencies
-Karena repo belum menyediakan `requirements.txt`, install paket minimal berikut:
+---
+
+### 4) Install Dependencies
 ```bash
-pip install streamlit scikit-learn numpy
+pip install -r requirements.txt
 ```
 
-Jika di kode ada penggunaan `pandas` atau `nltk`, tambahkan:
+---
+
+### 5) Run the Streamlit Application
 ```bash
-pip install pandas nltk
+streamlit run app.py
 ```
 
-### 5) Jalankan aplikasi Streamlit
-```bash
-streamlit run streamlit_spam_app.py
-```
+Open the URL shown in the terminal (usually `http://localhost:8501`) in your browser.
 
-Setelah itu buka URL yang muncul di terminal (biasanya `http://localhost:8501`).
+---
 
-## (Opsional) Retrain Model
-Jika kamu ingin melatih ulang model:
-1. Buka `nlt_base_code.ipynb`.
-2. Jalankan cell dari awal sampai akhir.
-3. Pastikan output training menyimpan ulang:
-   - `tfidf_vectorizer.pkl`
+## (Optional) Retrain the Model
+To retrain the model with the provided dataset:
+1. Ensure `data/email_spam_indo.csv` is available.
+2. Run the training script:
+   ```bash
+   python train.py
+   ```
+3. This will regenerate:
    - `rf_model.pkl`
-4. Jalankan lagi aplikasi Streamlit seperti biasa.
+   - `tfidf_vectorizer.pkl`
+4. Restart the Streamlit application to use the updated model.
+
+---
+
+## Notes
+- The application supports adjustable spam detection strictness via predefined modes (Light, Moderate, Strict).
+- This project demonstrates a complete NLP pipeline suitable for academic assignments or portfolio showcases.
